@@ -10,13 +10,17 @@ fun main() {
     if (wordsFile.exists()) {
 
         for (line in wordsFile.readLines()) {
-            val line = line.split("|")
-            val word = Word(original = line[0], translate = line[1], correctAnswersCount = line[2].toIntOrNull()?:0)
+            val parts = line.split("|")
+            val word = Word(
+                original = parts[0],
+                translate = parts[1],
+                correctAnswersCount = parts.getOrNull(2)?.toIntOrNull() ?: 0
+            )
             dictionary.add(word)
         }
-       dictionary.forEach {
-           println(it)
-       }
+        dictionary.forEach {
+            println(it)
+        }
     } else {
         println("Файла не существует")
     }
