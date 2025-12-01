@@ -5,6 +5,29 @@ import java.io.File
 
 fun main() {
 
+    val dictionary = loadDictionary()
+
+    while (true) {
+        println(
+            """
+            Меню: 
+            1 – Учить слова
+            2 – Статистика
+            0 – Выход
+        """.trimIndent()
+        )
+        val userInput = readln()
+
+        when (userInput) {
+            "1" -> println("Учить слова")
+            "2" -> println("Статистика")
+            "0" -> return
+            else -> println("Введите число 1, 2 или 0")
+        }
+    }
+}
+
+fun loadDictionary(): List<Word> {
     val wordsFile = File("words.txt")
     val dictionary = mutableListOf<Word>()
     if (wordsFile.exists()) {
@@ -18,10 +41,6 @@ fun main() {
             )
             dictionary.add(word)
         }
-        dictionary.forEach {
-            println(it)
-        }
-    } else {
-        println("Файла не существует")
     }
+    return dictionary
 }
