@@ -6,7 +6,8 @@ import java.io.File
 fun main() {
 
     val dictionary = loadDictionary()
-
+    val learnedCount = dictionary.filter { it.correctAnswersCount >= 3 }.size
+    val percent = (learnedCount.toDouble() / dictionary.size) * 100
     while (true) {
         println(
             """
@@ -20,7 +21,7 @@ fun main() {
 
         when (userInput) {
             "1" -> println("Учить слова")
-            "2" -> println("Статистика")
+            "2" -> println("Статистика\nВыучено $learnedCount из ${dictionary.size} слов | ${percent.toInt()}%\n")
             "0" -> return
             else -> println("Введите число 1, 2 или 0")
         }
