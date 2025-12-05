@@ -6,6 +6,7 @@ import java.io.File
 fun main() {
 
     val dictionary = loadDictionary()
+    val learnedCount = dictionary.filter { it.correctAnswersCount >= MIN_CORRECT_COUNT }.size
 
     while (true) {
         println(
@@ -20,7 +21,11 @@ fun main() {
 
         when (userInput) {
             "1" -> println("Учить слова")
-            "2" -> println("Статистика")
+            "2" -> println(
+                "Статистика\nВыучено $learnedCount из" +
+                        " ${dictionary.size} слов |" +
+                        " ${(learnedCount / dictionary.size) * 100}%\n"
+            )
             "0" -> return
             else -> println("Введите число 1, 2 или 0")
         }
@@ -44,3 +49,5 @@ fun loadDictionary(): List<Word> {
     }
     return dictionary
 }
+
+const val MIN_CORRECT_COUNT = 3
