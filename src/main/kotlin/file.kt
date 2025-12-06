@@ -20,12 +20,29 @@ fun main() {
         val userInput = readln()
 
         when (userInput) {
-            "1" -> println("Учить слова")
+            "1" -> while (true) {
+                val notLearnedList = dictionary.filter { it.correctAnswersCount < MIN_CORRECT_COUNT }
+                if (notLearnedList.isEmpty()) {
+                    println("Все слова в словаре выучены")
+                    break
+                }
+
+                val questionWords = notLearnedList.take(4).shuffled()
+
+                println()
+                println("${questionWords.random().original}:")
+                questionWords.mapIndexed { index, word ->
+                    println("${index + 1} - ${word.translate}")
+                }
+                val userResponse = readln()
+            }
+
             "2" -> println(
                 "Статистика\nВыучено $learnedCount из" +
                         " ${dictionary.size} слов |" +
                         " ${(learnedCount / dictionary.size) * 100}%\n"
             )
+
             "0" -> return
             else -> println("Введите число 1, 2 или 0")
         }
