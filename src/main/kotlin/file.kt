@@ -27,7 +27,14 @@ fun main() {
                     break
                 }
 
-                val questionWords = notLearnedList.take(4).shuffled()
+                val questionWords = notLearnedList.take(NUMBER_UNLEARNED_WORDS).shuffled().toMutableList()
+                if (questionWords.size < NUMBER_UNLEARNED_WORDS) {
+                    val numberAddWords = NUMBER_UNLEARNED_WORDS - questionWords.size
+                    questionWords.addAll(dictionary.filter {
+                        it.correctAnswersCount >= MIN_CORRECT_COUNT
+                                && it !in notLearnedList
+                    }.shuffled().take(numberAddWords))
+                }
 
                 println()
                 println("${questionWords.random().original}:")
@@ -68,3 +75,4 @@ fun loadDictionary(): List<Word> {
 }
 
 const val MIN_CORRECT_COUNT = 3
+const val NUMBER_UNLEARNED_WORDS = 4
