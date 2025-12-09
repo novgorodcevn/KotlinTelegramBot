@@ -20,12 +20,37 @@ fun main() {
         val userInput = readln()
 
         when (userInput) {
-            "1" -> println("Учить слова")
+            "1" -> while (true) {
+                val notLearnedList = dictionary.filter { it.correctAnswersCount < MIN_CORRECT_COUNT }
+                if (notLearnedList.isEmpty()) {
+                    println("Все слова в словаре выучены")
+                    break
+                }
+
+                val questionWords = notLearnedList.take(NUMBER_UNLEARNED_WORDS).shuffled().toMutableList()
+                if (questionWords.size < NUMBER_UNLEARNED_WORDS) {
+                    val numberAddWords = NUMBER_UNLEARNED_WORDS - questionWords.size
+                    questionWords.addAll(dictionary.filter {
+                        it.correctAnswersCount >= MIN_CORRECT_COUNT
+                                && it !in notLearnedList
+                    }.shuffled().take(numberAddWords))
+                }
+                val correctAnswer = questionWords.random()
+
+                println()
+                println("${correctAnswer.original}:")
+                questionWords.mapIndexed { index, word ->
+                    println("${index + 1} - ${word.translate}")
+                }
+                val userResponse = readln().toIntOrNull()
+            }
+
             "2" -> println(
                 "Статистика\nВыучено $learnedCount из" +
                         " ${dictionary.size} слов |" +
                         " ${(learnedCount / dictionary.size) * 100}%\n"
             )
+
             "0" -> return
             else -> println("Введите число 1, 2 или 0")
         }
@@ -51,3 +76,4 @@ fun loadDictionary(): List<Word> {
 }
 
 const val MIN_CORRECT_COUNT = 3
+const val NUMBER_UNLEARNED_WORDS = 4
