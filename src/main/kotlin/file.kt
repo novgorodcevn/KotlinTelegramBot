@@ -35,13 +35,14 @@ fun main() {
                                 && it !in notLearnedList
                     }.shuffled().take(numberAddWords))
                 }
+                val correctAnswer = questionWords.random()
 
                 println()
-                println("${questionWords.random().original}:")
+                println("${correctAnswer.original}:")
                 questionWords.mapIndexed { index, word ->
                     println("${index + 1} - ${word.translate}")
                 }
-                val userResponse = readln()
+                val userResponse = readln().toIntOrNull()
             }
 
             "2" -> println(
