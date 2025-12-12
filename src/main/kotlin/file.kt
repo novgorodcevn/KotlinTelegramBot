@@ -5,7 +5,7 @@ import java.io.File
 
 fun main() {
 
-    val dictionary = loadDictionary()
+    val dictionary = loadDictionary().toMutableList()
     val learnedCount = dictionary.filter { it.correctAnswersCount >= MIN_CORRECT_COUNT }.size
 
     while (true) {
@@ -42,7 +42,29 @@ fun main() {
                 questionWords.mapIndexed { index, word ->
                     println("${index + 1} - ${word.translate}")
                 }
-                val userResponse = readln().toIntOrNull()
+                println("----------")
+                println("0 - Меню")
+
+                when (val userAnswerInput = readln().toIntOrNull()) {
+                    null -> println("Не коррекный ввод")
+                    0 -> break
+                    in 1..4 -> {
+                        val correctAnswerId = questionWords.indexOfFirst { it.original == correctAnswer.original }
+                        if ((userAnswerInput - 1) == correctAnswerId) {
+                            println("Правильно!")
+                            val index = dictionary.indexOfFirst { it.original == correctAnswer.original }
+                            val updatedWorld = dictionary[index]
+                            dictionary[index] =
+                                updatedWorld.copy(correctAnswersCount = updatedWorld.correctAnswersCount + 1)
+
+                            saveDictionary(dictionary)
+                        } else {
+                            println("Неправельно!${correctAnswer.original} - это ${correctAnswer.translate}")
+                        }
+                    }
+
+                    else -> println("Неверное значение: ${userAnswerInput}. Введите число от 0 до 4.")
+                }
             }
 
             "2" -> println(
@@ -73,6 +95,10 @@ fun loadDictionary(): List<Word> {
         }
     }
     return dictionary
+}
+
+fun saveDictionary(dictionary: MutableList<Word>) {
+    val saveDictionary = dictionary.toMutableList()
 }
 
 const val MIN_CORRECT_COUNT = 3
