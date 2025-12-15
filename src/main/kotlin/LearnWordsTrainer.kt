@@ -38,21 +38,25 @@ class LearnWordsTrainer {
         return dictionary
     }
 
-    fun saveDictionary(dictionary: MutableList<Word>) {
-        val saveDictionary = dictionary.toMutableList()
+    fun saveDictionary(words: List<Word>) {
+        val wordsFile = File("words.txt")
+        wordsFile.writeText("")
+        words.forEach { word ->
+            wordsFile.appendText("${word.original}|${word.translate}|${word.correctAnswersCount}\n")
+        }
     }
 
     fun getStatistics(): Statistics {
         val learnedCount = dictionary.filter { it.correctAnswersCount >= MIN_CORRECT_COUNT }.size
         val total = dictionary.size
-        val percent = (learnedCount / total) * 100
+        val percent = (learnedCount * 100) / total
         return Statistics(learnedCount, total, percent)
     }
 
     fun getNextQuestion(): Question? {
         val notLearnedList = dictionary.filter { it.correctAnswersCount < MIN_CORRECT_COUNT }
         if (notLearnedList.isEmpty()) return null
-        val questionWords = notLearnedList.take(NUMBER_UNLEARNED_WORDS).shuffled().toMutableList()
+        val questionWords = notLearnedList.shuffled().take(NUMBER_UNLEARNED_WORDS).toMutableList()
         if (questionWords.size < NUMBER_UNLEARNED_WORDS) {
             val numberAddWords = NUMBER_UNLEARNED_WORDS - questionWords.size
             questionWords.addAll(dictionary.filter {
@@ -73,9 +77,9 @@ class LearnWordsTrainer {
             val correctAnswerId = it.variants.indexOfFirst { it.original == question?.correctAnswer?.original }
             if (userAnswerId == correctAnswerId) {
                 val index = dictionary.indexOfFirst { it.original == question?.correctAnswer?.original }
-                val updatedWorld = dictionary[index]
+                val updatedWord = dictionary[index]
                 dictionary[index] =
-                    updatedWorld.copy(correctAnswersCount = updatedWorld.correctAnswersCount + 1)
+                    updatedWord.copy(correctAnswersCount = updatedWord.correctAnswersCount + 1)
                 saveDictionary(dictionary)
                 return true
             } else {

@@ -33,7 +33,7 @@ fun main() {
                 println(question.asConsoleString())
 
                 when (val userAnswerInput = readln().toIntOrNull()) {
-                    null -> println("Не коррекный ввод")
+                    null -> println("Не корректный ввод")
                     0 -> break
 
                     in 1..4 -> {
@@ -41,7 +41,7 @@ fun main() {
                             println("Правильно!")
 
                         } else {
-                            println("Неправельно!${question.correctAnswer.original} - это ${question.correctAnswer.translate}")
+                            println("Неправильно!${question.correctAnswer.original} - это ${question.correctAnswer.translate}")
                         }
                     }
                     else -> {
