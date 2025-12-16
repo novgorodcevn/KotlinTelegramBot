@@ -38,7 +38,7 @@ fun main() {
                 println(question.asConsoleString())
 
                 when (val userAnswerInput = readln().toIntOrNull()) {
-                    null -> println("Не корректный ввод")
+                    null -> println("Не коррекный ввод")
                     0 -> break
 
                     in 1..4 -> {
