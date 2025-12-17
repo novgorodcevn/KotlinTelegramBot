@@ -46,7 +46,7 @@ fun main() {
                             println("Правильно!")
 
                         } else {
-                            println("Неправильно!${question.correctAnswer.original} - это ${question.correctAnswer.translate}")
+                            println("Неправильно! ${question.correctAnswer.original} - это ${question.correctAnswer.translate}")
                         }
                     }
 
