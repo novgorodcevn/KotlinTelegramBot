@@ -9,7 +9,12 @@ fun Question.asConsoleString(): String {
 
 fun main() {
 
-    val trainer = LearnWordsTrainer()
+    val trainer = try {
+        LearnWordsTrainer()
+    } catch (e: Exception) {
+        println("Невозможно загрузить словарь")
+        return
+    }
 
     while (true) {
         println(
@@ -41,9 +46,10 @@ fun main() {
                             println("Правильно!")
 
                         } else {
-                            println("Неправильно!${question.correctAnswer.original} - это ${question.correctAnswer.translate}")
+                            println("Неправильно! ${question.correctAnswer.original} - это ${question.correctAnswer.translate}")
                         }
                     }
+
                     else -> {
                         println("Неверное значение: ${userAnswerInput}. Введите число от 0 до 4.")
                     }
