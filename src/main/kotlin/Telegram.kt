@@ -16,10 +16,11 @@ fun main(args: Array<String>) {
         val updates: String = getUpdates(botToken, updateId)
         println(updates)
 
-        val starUpdateId = updates.lastIndexOf("update_id")
+        val startUpdateId = updates.lastIndexOf("update_id")
         val endUpdateId = updates.lastIndexOf(",\n\"message\"")
-        if (starUpdateId == -1 || endUpdateId == -1) continue
-        val updateIdString = updates.substring(starUpdateId + 11, endUpdateId)
+
+        if (startUpdateId == -1 || endUpdateId == -1) continue
+        val updateIdString = updates.substring(startUpdateId + 11, endUpdateId)
         updateId = updateIdString.toInt() + 1
     }
 }
