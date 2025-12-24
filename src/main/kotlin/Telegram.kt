@@ -1,10 +1,5 @@
 package org.example
 
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
-
 
 fun main(args: Array<String>) {
 
@@ -20,22 +15,20 @@ fun main(args: Array<String>) {
         val updateIdRegex: Regex = "\"update_id\":(\\d+),".toRegex()
         val matchResultUpdate: MatchResult? = updateIdRegex.find(updates)
         val groupsUpdate = matchResultUpdate?.groups
-        val textUpdate = groupsUpdate?.get(1)?.value
-        println(textUpdate)
-        updateId = textUpdate?.toInt()?.plus(1) ?: continue
+        val updateIdValue = groupsUpdate?.get(1)?.value
+        println(updateIdValue)
+        updateId = updateIdValue?.toInt()?.plus(1) ?: continue
 
         val chatTextRegex: Regex = "\"chat\":\\{\"id\":(.+?),".toRegex()
         val mathResultChat: MatchResult? = chatTextRegex.find(updates)
         val groupsChat = mathResultChat?.groups
-        val textChatId = groupsChat?.get(1)?.value
-        val chatId = textChatId?.toInt()
-        println(textChatId)
+        val chatIdValue = groupsChat?.get(1)?.value
+        val chatId = chatIdValue?.toInt()
 
         val messageTextRegex: Regex = "\"text\":\"(.+?)\"".toRegex()
         val matchResult: MatchResult? = messageTextRegex.find(updates)
         val groups = matchResult?.groups
         val text = groups?.get(1)?.value
-        println(text)
 
         if (chatId != null && text != null) {
             telegramBotService.sendMessage(botToken, chatId, text)
