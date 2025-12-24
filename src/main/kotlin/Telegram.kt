@@ -32,13 +32,23 @@ fun main(args: Array<String>) {
         val textRegex: Regex = "\"text\":\"(.+?)\"".toRegex()
         val matchResult: MatchResult? = textRegex.find(updates)
         val groups = matchResult?.groups
+        val updateIdRegex: Regex = "\"update_id\":(\\d+),".toRegex()
+        val matchResultUpdate: MatchResult? = updateIdRegex.find(updates)
+        val groupsUpdate = matchResultUpdate?.groups
+        val textUpdate = groupsUpdate?.get(1)?.value
+        println(textUpdate)
+        updateId = textUpdate?.toInt()?.plus(1) ?: continue
+
+        val messageTextRegex: Regex = "\"text\":\"(.+?)\"".toRegex()
+        val matchResult: MatchResult? = messageTextRegex.find(updates)
+        val groups = matchResult?.groups
         val text = groups?.get(1)?.value
         println(text)
         if (chatId != null && text != null) {
             sendMessage(botToken,chatId,text)
         }
+        println(text)
     }
-
 }
 
 fun getUpdates(botToken: String, updateId: Int): String {
