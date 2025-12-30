@@ -1,7 +1,12 @@
 package org.example
 
-import org.example.data.Word
 import java.io.File
+
+data class Word(
+    val original: String,
+    val translate: String,
+    val correctAnswersCount: Int = 0,
+)
 
 data class Statistics(
     val learnedCount: Int,

@@ -27,7 +27,7 @@ class TelegramBotService {
         return response.body()
     }
 
-    fun sendMenu(botToken: String, chatId: Int,): String? {
+    fun sendMenu(botToken: String, chatId: Int): String? {
         val urlSendMessage = "$TELEGRAM_BASE_URL$botToken/sendMessage"
         val sendMenuBody = """
             {
@@ -38,15 +38,15 @@ class TelegramBotService {
                         [
                             {
                                 "text": "Изучить слова",
-                                "callback_data": "learn_words_clicked"
+                                "callback_data": "$CALLBACK_DATA_LEARN_WORDS"
                             },
                             {
                                 "text": "Статистика",
-                                "callback_data": "statistics_clicked"
+                                "callback_data": "$CALLBACK_DATA_STATISTICS"
                             },
                             {
                                 "text": "Выход",
-                                "callback_data": "exit_clicked"
+                                "callback_data": "$CALLBACK_DATA_EXIT"
                             }
                         ]
                     ]
@@ -54,7 +54,7 @@ class TelegramBotService {
             }
         """.trimIndent()
         val request: HttpRequest = HttpRequest.newBuilder().uri(URI.create(urlSendMessage))
-            .header("Content-type","application/json")
+            .header("Content-Type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString(sendMenuBody))
             .build()
         val response: HttpResponse<String> = client.send(request, HttpResponse.BodyHandlers.ofString())
@@ -63,3 +63,6 @@ class TelegramBotService {
 }
 
 const val TELEGRAM_BASE_URL = "https://api.telegram.org/bot"
+const val CALLBACK_DATA_LEARN_WORDS = "learn_words_clicked"
+const val CALLBACK_DATA_STATISTICS = "statistics_clicked"
+const val CALLBACK_DATA_EXIT = "exit_clicked"

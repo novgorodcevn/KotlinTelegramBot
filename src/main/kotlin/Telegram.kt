@@ -17,7 +17,7 @@ fun main(args: Array<String>) {
     while (true) {
         Thread.sleep(2000)
         val updates: String = telegramBotService.getUpdates(botToken, updateId)
-
+        println(updates)
         val matchResultUpdate: MatchResult? = updateIdRegex.find(updates)
         val groupsUpdate = matchResultUpdate?.groups
         val updateIdValue = groupsUpdate?.get(1)?.value
@@ -37,6 +37,28 @@ fun main(args: Array<String>) {
 
         if (chatId != null && text == "/start") {
             telegramBotService.sendMenu(botToken, chatId)
+        }
+
+        if (data != null&& chatId!=null) {
+            when (data) {
+                CALLBACK_DATA_LEARN_WORDS -> telegramBotService.sendMessage(
+                    botToken,
+                    chatId,
+                    "Выбрано изучение слов"
+                )
+
+                CALLBACK_DATA_STATISTICS -> telegramBotService.sendMessage(
+                    botToken,
+                    chatId,
+                    "Выбрана статистика"
+                )
+
+                CALLBACK_DATA_EXIT -> telegramBotService.sendMessage(
+                    botToken,
+                    chatId,
+                    "Выбрано выход"
+                )
+            }
         }
     }
 }
