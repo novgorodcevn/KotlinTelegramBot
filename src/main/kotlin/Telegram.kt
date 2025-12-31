@@ -40,6 +40,8 @@ fun main(args: Array<String>) {
         }
 
         if (data != null&& chatId!=null) {
+            val statistics = trainer.getStatistics()
+            
             when (data) {
                 CALLBACK_DATA_LEARN_WORDS -> telegramBotService.sendMessage(
                     botToken,
@@ -50,7 +52,9 @@ fun main(args: Array<String>) {
                 CALLBACK_DATA_STATISTICS -> telegramBotService.sendMessage(
                     botToken,
                     chatId,
-                    "Выбрана статистика"
+                    "Статистика\nВыучено ${statistics.learnedCount} из" +
+                            " ${statistics.total} слов |" +
+                            " ${statistics.percent}%\n"
                 )
 
                 CALLBACK_DATA_EXIT -> telegramBotService.sendMessage(
