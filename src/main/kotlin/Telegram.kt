@@ -39,9 +39,9 @@ fun main(args: Array<String>) {
             telegramBotService.sendMenu(botToken, chatId)
         }
 
-        if (data != null&& chatId!=null) {
+        if (data != null && chatId != null) {
             val statistics = trainer.getStatistics()
-            
+
             when (data) {
                 CALLBACK_DATA_LEARN_WORDS -> telegramBotService.sendMessage(
                     botToken,
