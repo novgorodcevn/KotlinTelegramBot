@@ -27,6 +27,35 @@ class TelegramBotService {
         return response.body()
     }
 
+    fun sendQuestion(botToken: String, chatId: Int, question: Question): String? {
+        val urlSendQuestion = "$TELEGRAM_BASE_URL$botToken/sendMessage"
+        val buttonQuestion = question.variants.mapIndexed { index, word ->
+            """{
+                "text": "${word.translate}",
+                "callback_data": "$CALLBACK_DATA_ANSWER_PREFIX$index"
+            }"""
+        }.joinToString (separator = ",")
+        val sendQuestionBody = """
+            {
+                "chat_id": $chatId,
+                "text": "${question.correctAnswer.original}",
+                "reply_markup": {
+                    "inline_keyboard": [
+                        [
+                            $buttonQuestion                           
+                        ]
+                    ]
+                }
+            }
+        """.trimIndent()
+        val request: HttpRequest = HttpRequest.newBuilder().uri(URI.create(urlSendQuestion))
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(sendQuestionBody))
+            .build()
+        val response: HttpResponse<String> = client.send(request, HttpResponse.BodyHandlers.ofString())
+        return response.body()
+    }
+
     fun sendMenu(botToken: String, chatId: Int): String? {
         val urlSendMessage = "$TELEGRAM_BASE_URL$botToken/sendMessage"
         val sendMenuBody = """
@@ -66,3 +95,4 @@ const val TELEGRAM_BASE_URL = "https://api.telegram.org/bot"
 const val CALLBACK_DATA_LEARN_WORDS = "learn_words_clicked"
 const val CALLBACK_DATA_STATISTICS = "statistics_clicked"
 const val CALLBACK_DATA_EXIT = "exit_clicked"
+const val CALLBACK_DATA_ANSWER_PREFIX = "answer_"
