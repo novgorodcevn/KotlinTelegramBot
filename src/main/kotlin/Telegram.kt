@@ -23,6 +23,7 @@ fun main(args: Array<String>) {
             telegramBotService.sendMessage(botToken, chatId, "Вы выучили все слова в базе")
         } else {
             telegramBotService.sendQuestion(botToken, chatId, question)
+
         }
     }
 
