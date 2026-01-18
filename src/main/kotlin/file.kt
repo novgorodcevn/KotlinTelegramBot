@@ -71,6 +71,3 @@ fun main() {
         }
     }
 }
-
-const val MIN_CORRECT_COUNT = 3
-const val NUMBER_UNLEARNED_WORDS = 4
