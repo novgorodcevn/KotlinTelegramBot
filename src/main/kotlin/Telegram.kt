@@ -48,41 +48,6 @@ fun main(args: Array<String>) {
 
         val data = dataRegex.find(updates)?.groups?.get(1)?.value
 
-        fun checkNextQuestionAndSend(
-            trainer: LearnWordsTrainer,
-            telegramBotService: TelegramBotService,
-            chatId: Int
-        ) {
-
-                val question = trainer.getNextQuestion()
-
-                if (question == null) {
-                    telegramBotService.sendMessage(botToken, chatId, "Вы выучили все слова в базе")
-                } else {
-                    telegramBotService.sendQuestion(botToken, chatId, question)
-                }
-                if (data != null) {
-                    if (data.startsWith(CALLBACK_DATA_ANSWER_PREFIX)) {
-                        val userAnswerIndex = data.substringAfter(CALLBACK_DATA_ANSWER_PREFIX).toIntOrNull()
-
-                        if (userAnswerIndex != null) {
-
-                            if (trainer.checkAnswer(userAnswerIndex)) {
-                                telegramBotService.sendMessage(botToken, chatId, "Правильно!")
-                            } else {
-                                telegramBotService.sendMessage(
-                                    botToken,
-                                    chatId,
-                                    "Неправильно! ${question?.correctAnswer?.original} - это ${question?.correctAnswer?.translate}"
-                                )
-                            }
-                            checkNextQuestionAndSend(trainer, telegramBotService, chatId)
-                        }
-                    }
-                }
-
-        }
-
         if (chatId != null && text == "/start") {
             telegramBotService.sendMenu(botToken, chatId)
         }
@@ -109,6 +74,24 @@ fun main(args: Array<String>) {
                     chatId,
                     "Выбрано выход"
                 )
+            }
+
+            if (data.startsWith(CALLBACK_DATA_ANSWER_PREFIX)) {
+                val userAnswerIndex = data.substringAfter(CALLBACK_DATA_ANSWER_PREFIX).toIntOrNull()
+
+                if (userAnswerIndex != null) {
+
+                    if (trainer.checkAnswer(userAnswerIndex)) {
+                        telegramBotService.sendMessage(botToken, chatId, "Правильно!")
+                    } else {
+                        telegramBotService.sendMessage(
+                            botToken,
+                            chatId,
+                            "Неправильно! ${trainer.getNextQuestion()?.correctAnswer?.original} - это ${trainer.getNextQuestion()?.correctAnswer?.translate}"
+                        )
+                    }
+                    checkNextQuestionAndSend(trainer, telegramBotService, botToken, chatId)
+                }
             }
         }
     }
