@@ -16,6 +16,7 @@ fun main(args: Array<String>) {
     fun checkNextQuestionAndSend(
         trainer: LearnWordsTrainer,
         telegramBotService: TelegramBotService,
+        botToken: String,
         chatId: Int
     ) {
         val question = trainer.getNextQuestion()
@@ -23,7 +24,6 @@ fun main(args: Array<String>) {
             telegramBotService.sendMessage(botToken, chatId, "Вы выучили все слова в базе")
         } else {
             telegramBotService.sendQuestion(botToken, chatId, question)
-
         }
     }
 
@@ -56,7 +56,7 @@ fun main(args: Array<String>) {
 
             when (data) {
 
-                CALLBACK_DATA_LEARN_WORDS -> checkNextQuestionAndSend(trainer, telegramBotService, chatId)
+                CALLBACK_DATA_LEARN_WORDS -> checkNextQuestionAndSend(trainer, telegramBotService, botToken, chatId)
 
                 CALLBACK_DATA_STATISTICS -> {
                     val statistics = trainer.getStatistics()
