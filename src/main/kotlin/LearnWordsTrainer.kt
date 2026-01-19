@@ -96,3 +96,6 @@ class LearnWordsTrainer {
         } ?: false
     }
 }
+
+const val MIN_CORRECT_COUNT = 3
+const val NUMBER_UNLEARNED_WORDS = 4

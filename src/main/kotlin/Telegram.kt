@@ -13,6 +13,20 @@ fun main(args: Array<String>) {
     val messageTextRegex: Regex = "\"text\":\"(.+?)\"".toRegex()
     val dataRegex: Regex = "\"data\":\"(.+?)\"".toRegex()
 
+    fun checkNextQuestionAndSend(
+        trainer: LearnWordsTrainer,
+        telegramBotService: TelegramBotService,
+        botToken: String,
+        chatId: Int
+    ) {
+        val question = trainer.getNextQuestion()
+        if (question == null) {
+            telegramBotService.sendMessage(botToken, chatId, "Вы выучили все слова в базе")
+        } else {
+            telegramBotService.sendQuestion(botToken, chatId, question)
+        }
+    }
+
     while (true) {
         Thread.sleep(2000)
         val updates: String = telegramBotService.getUpdates(botToken, updateId)
@@ -74,19 +88,22 @@ fun main(args: Array<String>) {
         }
 
         if (data != null && chatId != null) {
-            val statistics = trainer.getStatistics()
 
             when (data) {
-                CALLBACK_DATA_LEARN_WORDS -> {
-                    checkNextQuestionAndSend(trainer, telegramBotService, chatId)
+
+                CALLBACK_DATA_LEARN_WORDS -> checkNextQuestionAndSend(trainer, telegramBotService, botToken, chatId)
+
+                CALLBACK_DATA_STATISTICS -> {
+                    val statistics = trainer.getStatistics()
+                    telegramBotService.sendMessage(
+                        botToken,
+                        chatId,
+                        "Статистика\nВыучено ${statistics.learnedCount} из" +
+                                " ${statistics.total} слов |" +
+                                " ${statistics.percent}%\n"
+                    )
                 }
-                CALLBACK_DATA_STATISTICS -> telegramBotService.sendMessage(
-                    botToken,
-                    chatId,
-                    "Статистика\nВыучено ${statistics.learnedCount} из" +
-                            " ${statistics.total} слов |" +
-                            " ${statistics.percent}%\n"
-                )
+
                 CALLBACK_DATA_EXIT -> telegramBotService.sendMessage(
                     botToken,
                     chatId,

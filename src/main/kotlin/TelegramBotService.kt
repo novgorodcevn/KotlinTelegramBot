@@ -34,7 +34,7 @@ class TelegramBotService {
                 "text": "${word.translate}",
                 "callback_data": "$CALLBACK_DATA_ANSWER_PREFIX$index"
             }"""
-        }.joinToString (separator = ",")
+        }.joinToString(separator = ",")
         val sendQuestionBody = """
             {
                 "chat_id": $chatId,
