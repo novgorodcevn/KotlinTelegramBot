@@ -87,7 +87,7 @@ fun main(args: Array<String>) {
                         telegramBotService.sendMessage(
                             botToken,
                             chatId,
-                            "Неправильно! ${trainer.getNextQuestion()?.correctAnswer?.original} - это ${trainer.getNextQuestion()?.correctAnswer?.translate}"
+                            "Неправильно! ${trainer.question?.correctAnswer?.original} - это ${trainer.question?.correctAnswer?.translate}"
                         )
                     }
                     checkNextQuestionAndSend(trainer, telegramBotService, botToken, chatId)
