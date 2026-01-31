@@ -75,6 +75,24 @@ fun main(args: Array<String>) {
                     "Выбрано выход"
                 )
             }
+
+            if (data.startsWith(CALLBACK_DATA_ANSWER_PREFIX)) {
+                val userAnswerIndex = data.substringAfter(CALLBACK_DATA_ANSWER_PREFIX).toIntOrNull()
+
+                if (userAnswerIndex != null) {
+
+                    if (trainer.checkAnswer(userAnswerIndex)) {
+                        telegramBotService.sendMessage(botToken, chatId, "Правильно!")
+                    } else {
+                        telegramBotService.sendMessage(
+                            botToken,
+                            chatId,
+                            "Неправильно! ${trainer.question?.correctAnswer?.original} - это ${trainer.question?.correctAnswer?.translate}"
+                        )
+                    }
+                    checkNextQuestionAndSend(trainer, telegramBotService, botToken, chatId)
+                }
+            }
         }
     }
 }
