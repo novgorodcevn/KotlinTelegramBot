@@ -2,7 +2,6 @@ package org.example
 
 import kotlinx.serialization.json.Json
 import java.net.URI
-import java.net.URLEncoder
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
@@ -20,7 +19,6 @@ class TelegramBotService {
     }
 
     fun sendMessage(json: Json, botToken: String, chatId: Long, text: String): String? {
-     //   val encodedText = URLEncoder.encode(text, "UTF-8")
         val urlSendMessage = "$TELEGRAM_BASE_URL$botToken/sendMessage"
         val requestBody = SendMessageRequest(
             chatId = chatId,
@@ -40,7 +38,7 @@ class TelegramBotService {
         val requestBody = SendMessageRequest(
             chatId = chatId,
             text = question.correctAnswer.original,
-            replayMarkup = ReplyMarkup(
+            replyMarkup = ReplyMarkup(
                 listOf(question.variants.mapIndexed { index, word ->
                     InlineKeyboard(
                         text = word.translate, callbackData = "$CALLBACK_DATA_ANSWER_PREFIX$index"
@@ -63,7 +61,7 @@ class TelegramBotService {
         val requestBody = SendMessageRequest(
             chatId = chatId,
             text = "Основное меню",
-            replayMarkup = ReplyMarkup(
+            replyMarkup = ReplyMarkup(
                 listOf(
                     listOf(
                         InlineKeyboard(text = "Изучить слова", callbackData = CALLBACK_DATA_LEARN_WORDS),

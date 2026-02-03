@@ -49,7 +49,7 @@ data class SendMessageRequest(
     @SerialName("text")
     val text: String,
     @SerialName("reply_markup")
-    val replayMarkup: ReplyMarkup? = null,
+    val replyMarkup: ReplyMarkup? = null,
 )
 
 @Serializable
