@@ -23,7 +23,7 @@ class TelegramBotService {
         val requestBody = SendMessageRequest(
             chatId = chatId,
             text = text,
-            )
+        )
         val requestBodyString = json.encodeToString(requestBody)
         val request: HttpRequest = HttpRequest.newBuilder().uri(URI.create(urlSendMessage))
             .header("Content-Type", "application/json")
@@ -66,6 +66,9 @@ class TelegramBotService {
                     listOf(
                         InlineKeyboard(text = "Изучить слова", callbackData = CALLBACK_DATA_LEARN_WORDS),
                         InlineKeyboard(text = "Статистика", callbackData = CALLBACK_DATA_STATISTICS),
+                    ),
+                    listOf(
+                        InlineKeyboard(text = "Сбросить прогресс", callbackData = CALLBACK_DATA_RESET)
                     )
                 )
             )
@@ -84,5 +87,6 @@ class TelegramBotService {
 const val TELEGRAM_BASE_URL = "https://api.telegram.org/bot"
 const val CALLBACK_DATA_LEARN_WORDS = "learn_words_clicked"
 const val CALLBACK_DATA_STATISTICS = "statistics_clicked"
+const val CALLBACK_DATA_RESET = "reset_clicked"
 const val CALLBACK_DATA_EXIT = "exit_clicked"
 const val CALLBACK_DATA_ANSWER_PREFIX = "answer_"

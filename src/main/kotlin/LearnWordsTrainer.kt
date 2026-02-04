@@ -7,7 +7,7 @@ import java.io.File
 data class Word(
     val original: String,
     val translate: String,
-    val correctAnswersCount: Int = 0,
+    var correctAnswersCount: Int = 0,
 )
 
 data class Statistics(
@@ -21,14 +21,18 @@ data class Question(
     val correctAnswer: Word,
 )
 
-class LearnWordsTrainer {
-
+class LearnWordsTrainer(
+    private val fileName: String = "words.txt"
+) {
     var question: Question? = null
     val dictionary = loadDictionary().toMutableList()
 
     fun loadDictionary(): List<Word> {
         try {
-            val wordsFile = File("words.txt")
+            val wordsFile = File(fileName)
+            if (!wordsFile.exists()) {
+                File("words.txt").copyTo(wordsFile)
+            }
             val dictionary = mutableListOf<Word>()
             if (wordsFile.exists()) {
 
@@ -48,10 +52,10 @@ class LearnWordsTrainer {
         }
     }
 
-    fun saveDictionary(words: List<Word>) {
-        val wordsFile = File("words.txt")
+    fun saveDictionary() {
+        val wordsFile = File(fileName)
         wordsFile.writeText("")
-        words.forEach { word ->
+        dictionary.forEach { word ->
             wordsFile.appendText("${word.original}|${word.translate}|${word.correctAnswersCount}\n")
         }
     }
@@ -90,12 +94,17 @@ class LearnWordsTrainer {
                 val updatedWord = dictionary[index]
                 dictionary[index] =
                     updatedWord.copy(correctAnswersCount = updatedWord.correctAnswersCount + 1)
-                saveDictionary(dictionary)
+                saveDictionary()
                 return true
             } else {
                 return false
             }
         } ?: false
+    }
+
+    fun resetProgress() {
+      dictionary.forEach { it.correctAnswersCount = 0 }
+        saveDictionary()
     }
 }
 
