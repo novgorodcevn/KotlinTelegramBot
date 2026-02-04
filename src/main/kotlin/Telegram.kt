@@ -71,7 +71,6 @@ fun main(args: Array<String>) {
     val botToken = args[0]
     var lastUpdateId = 0L
     val telegramBotService = TelegramBotService()
-    val trainer = LearnWordsTrainer()
     val trainers = HashMap<Long, LearnWordsTrainer>()
 
     val json = Json {
@@ -169,6 +168,5 @@ fun main(args: Array<String>) {
         val sortedUpdates = response.result.sortedBy { it.updateId }
         sortedUpdates.forEach { handleUpdate(it, json, botToken, trainers) }
         lastUpdateId = sortedUpdates.last().updateId + 1
-
     }
 }
