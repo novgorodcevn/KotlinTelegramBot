@@ -82,6 +82,17 @@ class TelegramBotService {
         val response: HttpResponse<String> = client.send(request, HttpResponse.BodyHandlers.ofString())
         return response.body()
     }
+
+    fun answerCallbackQuery(botToken: String, callbackQueryId: String) {
+        val url = "$TELEGRAM_BASE_URL$botToken/answerCallbackQuery"
+        val requestBody = Json.encodeToString(mapOf("callback_query_id" to callbackQueryId))
+        val request: HttpRequest = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+            .build()
+        client.send(request, HttpResponse.BodyHandlers.ofString())
+    }
 }
 
 const val TELEGRAM_BASE_URL = "https://api.telegram.org/bot"
