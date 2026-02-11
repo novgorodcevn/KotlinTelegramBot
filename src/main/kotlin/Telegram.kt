@@ -30,6 +30,8 @@ data class Message(
 
 @Serializable
 data class CallbackQuery(
+    @SerialName("id")
+    val id: String,
     @SerialName("data")
     val data: String? = null,
     @SerialName("message")
@@ -97,7 +99,10 @@ fun main(args: Array<String>) {
         val message = firstUpdate.message?.text
         val chatId = firstUpdate.message?.chat?.id ?: firstUpdate.callbackQuery?.message?.chat?.id ?: return
         val data = firstUpdate.callbackQuery?.data
-
+        val callbackQuery = firstUpdate.callbackQuery
+        if (callbackQuery != null) {
+            telegramBotService.answerCallbackQuery(botToken, callbackQuery.id)
+        }
         val trainer = trainers.getOrPut(chatId) { LearnWordsTrainer("$chatId.txt") }
         if (message == "/start") {
             telegramBotService.sendMenu(json, botToken, chatId)
@@ -153,9 +158,9 @@ fun main(args: Array<String>) {
                     checkNextQuestionAndSend(trainer, telegramBotService, botToken, chatId, json)
                 }
             }
-            if (data == CALLBACK_DATA_RESET){
+            if (data == CALLBACK_DATA_RESET) {
                 trainer.resetProgress()
-                telegramBotService.sendMessage(json,botToken,chatId,"Прогресс сброшен")
+                telegramBotService.sendMessage(json, botToken, chatId, "Прогресс сброшен")
             }
         }
     }
