@@ -1,3 +1,6 @@
+import org.example.LearnWordsTrainer
+import org.example.NUMBER_UNLEARNED_WORDS
+import org.example.Statistics
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
