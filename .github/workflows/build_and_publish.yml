@@ -22,9 +22,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew shadowJar
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
       - name: Rename file
         run: mv build/libs/EnglishWordsBot-1.0-SNAPSHOT-all.jar bot.jar
 
