@@ -1,6 +1,8 @@
 package org.example
 
 import kotlinx.serialization.json.Json
+import java.io.File
+import java.io.InputStream
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -9,6 +11,38 @@ import java.net.http.HttpResponse
 class TelegramBotService {
 
     val client: HttpClient = HttpClient.newBuilder().build()
+
+    fun downloadFile(botToken: String,filePath: String, fileName: String) {
+        val urlGetFile = "https://api.telegram.org/file/bot/$botToken/$filePath"
+        println(urlGetFile)
+        val request = HttpRequest
+            .newBuilder()
+            .uri(URI.create(urlGetFile))
+            .GET()
+            .build()
+
+        val response: HttpResponse<InputStream> = HttpClient
+            .newHttpClient()
+            .send(request, HttpResponse.BodyHandlers.ofInputStream());
+
+        println("status code: " + response.statusCode());
+        val body: InputStream = response.body()
+        body.copyTo(File(fileName).outputStream(), 16 * 1024)
+    }
+
+    fun getFile(botToken: String,fileId: String): String {
+        val urlGetFile = "$TELEGRAM_BASE_URL$botToken/getFile?file_id=$fileId"
+        val client: HttpClient = HttpClient.newBuilder().build()
+        val request: HttpRequest = HttpRequest.newBuilder()
+            .uri(URI.create(urlGetFile))
+            .GET()
+            .build()
+        val response: HttpResponse<String> = client.send(
+            request,
+            HttpResponse.BodyHandlers.ofString()
+        )
+        return response.body()
+    }
 
     fun getUpdates(botToken: String, updateId: Long): String {
         val urlGetUpdates = "$TELEGRAM_BASE_URL$botToken/getUpdates?offset=$updateId"
