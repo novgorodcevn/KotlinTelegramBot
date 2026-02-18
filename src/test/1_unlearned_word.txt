@@ -1,6 +1,6 @@
-define|определять|0
-solve|решать|0
-serve|служить|0
+define|определять|1
+solve|решать|3
+serve|служить|3
 empty|пустой|3
 full|полный|3
 narrow|узкий|3
