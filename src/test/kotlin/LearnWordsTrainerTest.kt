@@ -24,6 +24,14 @@ class LearnWordsTrainerTest {
         }
         assertEquals("некорректный файл", exception.message)
     }
+    @Test
+    fun `test getNextQuestion() with 5 unlearned words`() {
+        val trainer = LearnWordsTrainer("src/test/5_unlearned_words.txt")
+        kotlin.test.assertEquals(
+            NUMBER_UNLEARNED_WORDS,
+            trainer.getNextQuestion()?.variants?.size
+        )
+    }
 
     @Test
     fun `fun test getNextQuestion() with 1 unlearned word`() {

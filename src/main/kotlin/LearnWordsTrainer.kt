@@ -63,7 +63,7 @@ class LearnWordsTrainer(
     fun getStatistics(): Statistics {
         val learnedCount = dictionary.filter { it.correctAnswersCount >= MIN_CORRECT_COUNT }.size
         val total = dictionary.size
-        val percent = (learnedCount * 100) / total
+        val percent = if (total == 0) 0 else (learnedCount * 100) / total
         return Statistics(learnedCount, total, percent)
     }
 
@@ -88,9 +88,10 @@ class LearnWordsTrainer(
 
     fun checkAnswer(userAnswerId: Int?): Boolean {
         return question?.let { it ->
-            val correctAnswerId = it.variants.indexOfFirst { it.original == question?.correctAnswer?.original }
+            val correctAnswer = it.correctAnswer
+            val correctAnswerId = it.variants.indexOfFirst { it.original == correctAnswer.original }
             if (userAnswerId == correctAnswerId) {
-                val index = dictionary.indexOfFirst { it.original == question?.correctAnswer?.original }
+                val index = dictionary.indexOfFirst { it.original == correctAnswer.original }
                 val updatedWord = dictionary[index]
                 dictionary[index] =
                     updatedWord.copy(correctAnswersCount = updatedWord.correctAnswersCount + 1)
