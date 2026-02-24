@@ -1,9 +1,10 @@
 package org.example
 
-fun Question.asConsoleString(): String {
-    val variants = this.variants
+fun Question.asConsoleString(limit: Int = 10): String {
+    val variants = this.variants.take(limit)
         .mapIndexed { index, word -> "${index + 1} - ${word.translate}" }
         .joinToString("\n")
+
     return this.correctAnswer.original + "\n" + variants + "\n" + "----------" + "\n" + "0 - Меню"
 }
 
