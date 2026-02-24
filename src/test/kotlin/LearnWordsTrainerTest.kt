@@ -34,7 +34,7 @@ class LearnWordsTrainerTest {
     }
 
     @Test
-    fun `fun test getNextQuestion() with 1 unlearned word`() {
+    fun `test getNextQuestion() with 1 unlearned word`() {
         val trainer = LearnWordsTrainer("src/test/1_unlearned_word.txt")
         kotlin.test.assertEquals(
             NUMBER_UNLEARNED_WORDS,
