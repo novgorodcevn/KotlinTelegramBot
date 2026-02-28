@@ -49,6 +49,12 @@ data class Update(
 )
 
 @Serializable
+data class BaseResponse(
+    val ok: Boolean,
+    val description: String? = null
+)
+
+@Serializable
 data class Response(
     @SerialName("result")
     val result: List<Update>,
@@ -72,6 +78,12 @@ data class CallbackQuery(
     val data: String? = null,
     @SerialName("message")
     val message: Message? = null,
+)
+
+@Serializable
+data class GetFileRequest(
+    @SerialName("file_id")
+    val fileId: String
 )
 
 @Serializable
@@ -142,13 +154,12 @@ fun main(args: Array<String>) {
             telegramBotService.answerCallbackQuery(botToken, callbackQuery.id)
         }
         if (document != null) {
-            val jsonResponse = telegramBotService.getFile(botToken, document.fileId)
+            val jsonResponse = telegramBotService.getFile(botToken, document.fileId, json)
             val response: GetFileResponse = json.decodeFromString(jsonResponse)
             response.result?.let {
                 telegramBotService.downloadFile(botToken, it.filePath, it.fileUniqueId)
             }
         }
-
         val trainer = trainers.getOrPut(chatId) { LearnWordsTrainer("$chatId.txt") }
         if (message == "/start") {
             telegramBotService.sendMenu(json, botToken, chatId)

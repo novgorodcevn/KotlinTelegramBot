@@ -24,23 +24,29 @@ class TelegramBotService {
         val response: HttpResponse<InputStream> = HttpClient
             .newHttpClient()
             .send(request, HttpResponse.BodyHandlers.ofInputStream());
-
-        println("status code: " + response.statusCode());
-        val body: InputStream = response.body()
-        body.copyTo(File(fileName).outputStream(), 16 * 1024)
+        if (response.statusCode() == 200) {
+            response.body().use { it.copyTo(File(fileName).outputStream()) }
+        } else {
+            println("Загрузка не удалась: ${response.statusCode()}")
+        }
     }
 
-    fun getFile(botToken: String,fileId: String): String {
+    fun getFile(botToken: String,fileId: String,json: Json): String {
         val urlGetFile = "$TELEGRAM_BASE_URL$botToken/getFile?file_id=$fileId"
+        println(urlGetFile)
+        val requestBody = GetFileRequest(fileId = fileId)
+        val requestBodyString = json.encodeToString(requestBody)
         val client: HttpClient = HttpClient.newBuilder().build()
         val request: HttpRequest = HttpRequest.newBuilder()
             .uri(URI.create(urlGetFile))
             .GET()
+            .POST(HttpRequest.BodyPublishers.ofString(requestBodyString))
             .build()
         val response: HttpResponse<String> = client.send(
             request,
             HttpResponse.BodyHandlers.ofString()
         )
+        println("Ответ getFile: ${response.body()}")
         return response.body()
     }
 
@@ -48,7 +54,6 @@ class TelegramBotService {
         val urlGetUpdates = "$TELEGRAM_BASE_URL$botToken/getUpdates?offset=$updateId"
         val request: HttpRequest = HttpRequest.newBuilder().uri(URI.create(urlGetUpdates)).build()
         val response: HttpResponse<String> = client.send(request, HttpResponse.BodyHandlers.ofString())
-
         return response.body()
     }
 
