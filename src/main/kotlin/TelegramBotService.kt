@@ -12,22 +12,26 @@ class TelegramBotService {
 
     val client: HttpClient = HttpClient.newBuilder().build()
 
-    fun downloadFile(botToken: String,filePath: String, fileName: String) {
-        val urlGetFile = "https://api.telegram.org/file/bot/$botToken/$filePath"
+    fun downloadFile(botToken: String,filePath: String, fileName: String) : File? {
+        val urlGetFile = "https://api.telegram.org/file/bot/$botToken/documents/file_20.txt"
         println(urlGetFile)
         val request = HttpRequest
             .newBuilder()
             .uri(URI.create(urlGetFile))
             .GET()
             .build()
-
         val response: HttpResponse<InputStream> = HttpClient
             .newHttpClient()
-            .send(request, HttpResponse.BodyHandlers.ofInputStream());
-        if (response.statusCode() == 200) {
-            response.body().use { it.copyTo(File(fileName).outputStream()) }
+            .send(request, HttpResponse.BodyHandlers.ofInputStream())
+      return if (response.statusCode() == 200) {
+           response.body().use {
+               val file = File(fileName)
+               it.copyTo(File(fileName).outputStream())
+               file
+           }
         } else {
             println("Загрузка не удалась: ${response.statusCode()}")
+           null
         }
     }
 
@@ -39,7 +43,6 @@ class TelegramBotService {
         val client: HttpClient = HttpClient.newBuilder().build()
         val request: HttpRequest = HttpRequest.newBuilder()
             .uri(URI.create(urlGetFile))
-            .GET()
             .POST(HttpRequest.BodyPublishers.ofString(requestBodyString))
             .build()
         val response: HttpResponse<String> = client.send(

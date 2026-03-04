@@ -3,6 +3,7 @@ package org.example
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.io.File
 
 @Serializable
 data class GetFileResponse(
@@ -157,7 +158,21 @@ fun main(args: Array<String>) {
             val jsonResponse = telegramBotService.getFile(botToken, document.fileId, json)
             val response: GetFileResponse = json.decodeFromString(jsonResponse)
             response.result?.let {
-                telegramBotService.downloadFile(botToken, it.filePath, it.fileUniqueId)
+                val file: File? =  telegramBotService.downloadFile(botToken, it.filePath,  "words.txt")
+                val trainer = LearnWordsTrainer()
+                if (file != null) {
+                    if (file.exists()) {
+                        for (line in file.readLines()) {
+                            val parts = line.split("|")
+                            val word = Word(
+                                original = parts[0],
+                                translate = parts[1],
+                                correctAnswersCount = parts.getOrNull(2)?.toIntOrNull() ?: 0
+                            )
+                            trainer.dictionary.add(word)
+                        }
+                    }
+                }
             }
         }
         val trainer = trainers.getOrPut(chatId) { LearnWordsTrainer("$chatId.txt") }
