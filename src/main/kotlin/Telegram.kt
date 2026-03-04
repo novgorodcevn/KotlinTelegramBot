@@ -3,6 +3,41 @@ package org.example
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.io.File
+
+@Serializable
+data class GetFileResponse(
+    @SerialName("ok")
+    val ok: Boolean,
+    @SerialName("result")
+    val result: TelegramFile? = null,
+)
+
+@Serializable
+data class TelegramFile(
+    @SerialName("file_id")
+    val fileId: String,
+    @SerialName("file_unique_id")
+    val fileUniqueId: String,
+    @SerialName("file_size")
+    val fileSize: Long,
+    @SerialName("file_path")
+    val filePath: String,
+)
+
+@Serializable
+data class Document(
+    @SerialName("file_name")
+    val fileName: String,
+    @SerialName("mime_type")
+    val mimeType: String,
+    @SerialName("file_id")
+    val fileId: String,
+    @SerialName("file_unique_id")
+    val fileUniqueId: String,
+    @SerialName("file_size")
+    val fileSize: Long,
+)
 
 @Serializable
 data class Update(
@@ -15,6 +50,12 @@ data class Update(
 )
 
 @Serializable
+data class BaseResponse(
+    val ok: Boolean,
+    val description: String? = null
+)
+
+@Serializable
 data class Response(
     @SerialName("result")
     val result: List<Update>,
@@ -23,9 +64,11 @@ data class Response(
 @Serializable
 data class Message(
     @SerialName("text")
-    val text: String,
+    val text: String? = null,
     @SerialName("chat")
     val chat: Chat,
+    @SerialName("document")
+    val document: Document? = null,
 )
 
 @Serializable
@@ -36,6 +79,12 @@ data class CallbackQuery(
     val data: String? = null,
     @SerialName("message")
     val message: Message? = null,
+)
+
+@Serializable
+data class GetFileRequest(
+    @SerialName("file_id")
+    val fileId: String
 )
 
 @Serializable
@@ -100,8 +149,31 @@ fun main(args: Array<String>) {
         val chatId = firstUpdate.message?.chat?.id ?: firstUpdate.callbackQuery?.message?.chat?.id ?: return
         val data = firstUpdate.callbackQuery?.data
         val callbackQuery = firstUpdate.callbackQuery
+        val document = firstUpdate.message?.document
+
         if (callbackQuery != null) {
             telegramBotService.answerCallbackQuery(botToken, callbackQuery.id)
+        }
+        if (document != null) {
+            val jsonResponse = telegramBotService.getFile(botToken, document.fileId, json)
+            val response: GetFileResponse = json.decodeFromString(jsonResponse)
+            response.result?.let {
+                val file: File? =  telegramBotService.downloadFile(botToken, it.filePath,  "words.txt")
+                val trainer = LearnWordsTrainer()
+                if (file != null) {
+                    if (file.exists()) {
+                        for (line in file.readLines()) {
+                            val parts = line.split("|")
+                            val word = Word(
+                                original = parts[0],
+                                translate = parts[1],
+                                correctAnswersCount = parts.getOrNull(2)?.toIntOrNull() ?: 0
+                            )
+                            trainer.dictionary.add(word)
+                        }
+                    }
+                }
+            }
         }
         val trainer = trainers.getOrPut(chatId) { LearnWordsTrainer("$chatId.txt") }
         if (message == "/start") {
