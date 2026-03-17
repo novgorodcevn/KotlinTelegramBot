@@ -13,7 +13,7 @@ class TelegramBotService {
     val client: HttpClient = HttpClient.newBuilder().build()
 
     fun downloadFile(botToken: String,filePath: String, fileName: String) : File? {
-        val urlGetFile = "https://api.telegram.org/file/bot/$botToken/documents/file_20.txt"
+        val urlGetFile = "https://api.telegram.org/file/bot/$botToken/$filePath"
         println(urlGetFile)
         val request = HttpRequest
             .newBuilder()
