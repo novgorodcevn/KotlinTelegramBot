@@ -40,7 +40,7 @@ class TelegramBotService {
         println(urlGetFile)
         val requestBody = GetFileRequest(fileId = fileId)
         val requestBodyString = json.encodeToString(requestBody)
-        val client: HttpClient = HttpClient.newBuilder().build()
+        //val client: HttpClient = HttpClient.newBuilder().build()
         val request: HttpRequest = HttpRequest.newBuilder()
             .uri(URI.create(urlGetFile))
             .POST(HttpRequest.BodyPublishers.ofString(requestBodyString))

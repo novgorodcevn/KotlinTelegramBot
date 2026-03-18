@@ -160,19 +160,6 @@ fun main(args: Array<String>) {
             response.result?.let {
                 val file: File? = telegramBotService.downloadFile(botToken, it.filePath, it.fileUniqueId)
                 val trainer = trainers.getOrPut(chatId) { LearnWordsTrainer(it.fileUniqueId) }
-                if (file != null) {
-                    if (file.exists()) {
-                        for (line in file.readLines()) {
-                            val parts = line.split("|")
-                            val word = Word(
-                                original = parts[0],
-                                translate = parts[1],
-                                correctAnswersCount = parts.getOrNull(2)?.toIntOrNull() ?: 0
-                            )
-                            trainer.dictionary.add(word)
-                        }
-                    }
-                }
             }
         }
         val trainer = trainers.getOrPut(chatId) { LearnWordsTrainer("$chatId.txt") }
