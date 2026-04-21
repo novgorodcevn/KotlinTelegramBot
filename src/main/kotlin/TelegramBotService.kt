@@ -12,35 +12,31 @@ class TelegramBotService {
 
     val client: HttpClient = HttpClient.newBuilder().build()
 
-    fun downloadFile(botToken: String,filePath: String, fileName: String) : File? {
-        val urlGetFile = "https://api.telegram.org/file/bot/$botToken/$filePath"
+    fun downloadFile(botToken: String, filePath: String, fileName: String) {
+        val urlGetFile = "https://api.telegram.org/file/bot$botToken/$filePath"
         println(urlGetFile)
         val request = HttpRequest
             .newBuilder()
             .uri(URI.create(urlGetFile))
             .GET()
             .build()
-        val response: HttpResponse<InputStream> = HttpClient
-            .newHttpClient()
+        val response: HttpResponse<InputStream> = client
             .send(request, HttpResponse.BodyHandlers.ofInputStream())
-      return if (response.statusCode() == 200) {
-           response.body().use {
-               val file = File(fileName)
-               it.copyTo(File(fileName).outputStream())
-               file
-           }
+        if (response.statusCode() == 200) {
+            response.body().use {
+                File(fileName)
+                it.copyTo(File(fileName).outputStream())
+            }
         } else {
             println("Загрузка не удалась: ${response.statusCode()}")
-           null
         }
     }
 
-    fun getFile(botToken: String,fileId: String,json: Json): String {
+    fun getFile(botToken: String, fileId: String, json: Json): String {
         val urlGetFile = "$TELEGRAM_BASE_URL$botToken/getFile?file_id=$fileId"
         println(urlGetFile)
         val requestBody = GetFileRequest(fileId = fileId)
         val requestBodyString = json.encodeToString(requestBody)
-        //val client: HttpClient = HttpClient.newBuilder().build()
         val request: HttpRequest = HttpRequest.newBuilder()
             .uri(URI.create(urlGetFile))
             .POST(HttpRequest.BodyPublishers.ofString(requestBodyString))

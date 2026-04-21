@@ -158,8 +158,8 @@ fun main(args: Array<String>) {
             val jsonResponse = telegramBotService.getFile(botToken, document.fileId, json)
             val response: GetFileResponse = json.decodeFromString(jsonResponse)
             response.result?.let {
-                val file: File? = telegramBotService.downloadFile(botToken, it.filePath, it.fileUniqueId)
-                val trainer = trainers.getOrPut(chatId) { LearnWordsTrainer(it.fileUniqueId) }
+                telegramBotService.downloadFile(botToken, it.filePath, it.fileUniqueId)
+                trainers.getOrPut(chatId) { LearnWordsTrainer(it.fileUniqueId) }
             }
         }
         val trainer = trainers.getOrPut(chatId) { LearnWordsTrainer("$chatId.txt") }
